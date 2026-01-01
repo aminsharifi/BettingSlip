@@ -1,6 +1,6 @@
 ﻿{
   "profiles": {
-    "Admiral.ShopManagement.Service": {
+    "BettingSlip.Service": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

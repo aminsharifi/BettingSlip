@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Admiral.ShopManagement.Service.Migrations
+namespace BettingSlip.Service.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20260101122707_InitialCreate")]

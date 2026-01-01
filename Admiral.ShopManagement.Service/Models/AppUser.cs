@@ -1,4 +1,4 @@
-namespace Admiral.ShopManagement.Service.Models;
+namespace BettingSlip.Service.Models;
 
 public class AppUser
 {

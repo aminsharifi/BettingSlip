@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Admiral.ShopManagement.Service.Controllers;
+namespace BettingSlip.Service.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

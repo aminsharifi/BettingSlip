@@ -1,4 +1,4 @@
-using Admiral.ShopManagement.Service.Models;
+using BettingSlip.Service.Models;
 using Microsoft.EntityFrameworkCore;
 
 public class AppDbContext : DbContext
