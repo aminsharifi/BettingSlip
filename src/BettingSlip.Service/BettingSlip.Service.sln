@@ -1,0 +1,35 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.1.11312.151 d18.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BettingSlip.Service", "BettingSlip.Service.csproj", "{E9B35888-3106-91A6-9058-8321DFBCD941}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{42541895-663C-4617-9DA5-F2EFD7F9CEA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BettingSlip.Core", "..\BettingSlip.Core\BettingSlip.Core.csproj", "{7CB375EB-FC2A-4E4D-9A23-0C60A4A2FECB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E9B35888-3106-91A6-9058-8321DFBCD941}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9B35888-3106-91A6-9058-8321DFBCD941}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9B35888-3106-91A6-9058-8321DFBCD941}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9B35888-3106-91A6-9058-8321DFBCD941}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CB375EB-FC2A-4E4D-9A23-0C60A4A2FECB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CB375EB-FC2A-4E4D-9A23-0C60A4A2FECB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CB375EB-FC2A-4E4D-9A23-0C60A4A2FECB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CB375EB-FC2A-4E4D-9A23-0C60A4A2FECB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7CB375EB-FC2A-4E4D-9A23-0C60A4A2FECB} = {42541895-663C-4617-9DA5-F2EFD7F9CEA0}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A6E2F934-DB6C-4DE6-B12D-E07A2E715D0C}
+	EndGlobalSection
+EndGlobal
