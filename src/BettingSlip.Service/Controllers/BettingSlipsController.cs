@@ -44,5 +44,12 @@ public class BettingSlipsController(BettingSlipService service) : ControllerBase
         var result = await service.GetAsync(id);
         return result is null ? NotFound() : Ok(result);
     }
+    /// <summary>Get betting slip</summary>
+    [HttpGet]
+    public async Task<IActionResult> ResultAsync()
+    {
+        var result = await service.ResultAsync();
+        return  Ok(result);
+    }
 }
 

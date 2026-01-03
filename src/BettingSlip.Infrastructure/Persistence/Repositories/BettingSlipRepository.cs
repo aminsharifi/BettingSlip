@@ -26,6 +26,14 @@ public class BettingSlipRepository(BettingSlipDbContext context) : IBettingSlipR
         return _slip;
     }
 
+    public async Task<IReadOnlyList<Slip>> ListAsync()
+    {
+        var _slip = await context.Slips
+           .Include(x => x.Selections).ToListAsync();
+
+        return _slip;
+    }
+
     public async Task SelectionAsync(AddSelectionCommand command)
     {
         Slip slip = await GetByIdAsync(command.SlipId)

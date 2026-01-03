@@ -43,20 +43,19 @@ public class BettingSlipService(
         await repository.SubmitAsync(command);
     }
 
+    public async Task<List<BettingSlipDto>> ResultAsync()
+    {
+        return (await repository.ListAsync())
+            .Select(x => x.ToBettingSlipDto())
+            .ToList();
+    }
+
     public async Task<BettingSlipDto?> GetAsync(Guid id)
     {
         var slip = await repository.GetByIdAsync(id);
         if (slip is null)
             return null;
 
-        return new BettingSlipDto(
-            slip.Id,
-            slip.StakeAmount,
-            slip.TotalOdds,
-            slip.PotentialWin,
-            slip.Status.ToString(),
-            slip.Selections.Select(s =>
-                new SelectionDto(s.Id, s.EventName, s.Market, s.Odd))
-            .ToList());
+        return slip.ToBettingSlipDto();
     }
 }

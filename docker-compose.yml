@@ -1,0 +1,38 @@
+version: "3.9"
+name: bettingslip
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    container_name: sqlserver
+    restart: always
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_PID=Developer
+      - SA_PASSWORD=m8A2T£5oH4n
+    ports:
+      - "5003:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P m8A2T£5oH4n -Q \"SELECT 1\""]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  bettingslip.service:
+    image: bettingslipservice
+    build:
+      context: .
+      dockerfile: src/BettingSlip.Service/Dockerfile
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=BettingSlipDb;User Id=sa;Password=m8A2T£5oH4n;TrustServerCertificate=True;
+    ports:
+      - "5001:5001"
+      - "5002:5002"
+
+volumes:
+  sqlserver-data:

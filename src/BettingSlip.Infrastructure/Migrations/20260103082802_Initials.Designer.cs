@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BettingSlip.Infrastructure.Migrations
 {
     [DbContext(typeof(BettingSlipDbContext))]
-    [Migration("20260102121537_Initials")]
+    [Migration("20260103082802_Initials")]
     partial class Initials
     {
         /// <inheritdoc />
@@ -47,7 +47,7 @@ namespace BettingSlip.Infrastructure.Migrations
                     b.Property<decimal>("Odd")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<Guid?>("SlipId")
+                    b.Property<Guid>("SlipId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -95,7 +95,9 @@ namespace BettingSlip.Infrastructure.Migrations
                 {
                     b.HasOne("BettingSlip.Core.SlipAggregate.Slip", null)
                         .WithMany("Selections")
-                        .HasForeignKey("SlipId");
+                        .HasForeignKey("SlipId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BettingSlip.Core.SlipAggregate.Slip", b =>

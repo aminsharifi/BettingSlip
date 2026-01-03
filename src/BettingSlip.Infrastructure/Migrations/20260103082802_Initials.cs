@@ -36,7 +36,7 @@ namespace BettingSlip.Infrastructure.Migrations
                     EventName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Market = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Odd = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    SlipId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    SlipId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
                 },
                 constraints: table =>
@@ -46,7 +46,8 @@ namespace BettingSlip.Infrastructure.Migrations
                         name: "FK_Selections_Slips_SlipId",
                         column: x => x.SlipId,
                         principalTable: "Slips",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
