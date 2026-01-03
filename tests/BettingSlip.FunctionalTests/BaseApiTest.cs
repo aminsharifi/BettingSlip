@@ -8,7 +8,7 @@ public abstract class BaseApiTest
     {
         Client = new HttpClient
         {
-            BaseAddress = new Uri("https://localhost:5001")
+            BaseAddress = new Uri("https://localhost:5002")
         };
     }
 }
