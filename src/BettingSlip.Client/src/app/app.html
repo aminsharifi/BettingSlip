@@ -1,15 +1,14 @@
 <div class="app-container">
-  <!-- Dashboard Header -->
   <header class="dashboard-header">
     <h1>{{ title }}</h1>
     
     <div class="stats">
       <div class="stat">
-        <span class="stat-value">${{ totalStakes() | number:'1.0-0' }}</span>
+        <span class="stat-value">{{ totalStakes() | currency:'EUR':'symbol':'1.0-0' }}</span>
         <span class="stat-label">Total Stake</span>
       </div>
       <div class="stat">
-        <span class="stat-value">${{ totalPotentialWin() | number:'1.0-0' }}</span>
+        <span class="stat-value">{{ totalPotentialWin() | currency:'EUR':'symbol':'1.0-0' }}</span>
         <span class="stat-label">Potential Win</span>
       </div>
       <div class="stat">
@@ -19,36 +18,27 @@
     </div>
 
     <div class="header-actions">
-      <button class="btn btn-secondary" (click)="refreshBetslips()">
-        🔄 Refresh
-      </button>
-      <button class="btn btn-primary" (click)="addNewBetslip()">
-        ➕ New Betslip
-      </button>
+      <button class="btn btn-secondary" (click)="refreshBetslips()">🔄 Refresh</button>
+      <button class="btn btn-primary" (click)="addNewBetslip()">➕ New Betslip</button>
     </div>
   </header>
 
-  <!-- Loading State -->
-  @if (isLoading) {
+  @if (isLoading()) {
     <div class="loading-state">
       <div class="spinner"></div>
       <p>Loading betslips from API...</p>
     </div>
   }
 
-  <!-- Error State -->
-  @if (errorMessage) {
+  @if (errorMessage()) {
     <div class="error-banner">
-      <span>⚠️ {{ errorMessage }}</span>
-      <button class="btn btn-retry" (click)="refreshBetslips()">
-        Try Again
-      </button>
+      <span>⚠️ {{ errorMessage() }}</span>
+      <button class="btn btn-retry" (click)="refreshBetslips()">Try Again</button>
     </div>
   }
 
-  <!-- Main Content -->
   <main class="main-content">
-    @switch (betslips.length) {
+    @switch (betslips().length) {
       @case (0) {
         <div class="empty-state">
           <div class="empty-icon">🎟️</div>
@@ -62,31 +52,23 @@
       
       @default {
         <div class="betslips-grid">
-          @for (betslip of betslips; track betslip.id; let i = $index) {
+          @for (betslip of betslips(); track betslip.id; let i = $index) {
             <article 
               class="betslip-card"
               [class.has-selections]="betslip.selections && betslip.selections.length > 0"
               [attr.data-id]="betslip.id">
               
-              <!-- Card Header -->
               <header class="card-header">
                 <div class="betslip-meta">
                   <span class="betslip-id">#{{ betslip.id | slice:0:8 }}...</span>
                   @switch (betslip.status) {
-                    @case ('Draft') {
-                      <span class="status-badge draft">Draft</span>
-                    }
-                    @case ('Placed') {
-                      <span class="status-badge placed">Placed</span>
-                    }
-                    @default {
-                      <span class="status-badge">{{ betslip.status }}</span>
-                    }
+                    @case ('Draft') { <span class="status-badge draft">Draft</span> }
+                    @case ('Placed') { <span class="status-badge placed">Placed</span> }
+                    @default { <span class="status-badge">{{ betslip.status }}</span> }
                   }
                 </div>
               </header>
 
-              <!-- Selections -->
               <section class="selections-section">
                 @if (betslip.selections && betslip.selections.length > 0) {
                   @for (selection of betslip.selections; track selection.id) {
@@ -94,7 +76,7 @@
                       <div class="event-name">{{ selection.eventName }}</div>
                       <div class="selection-details">
                         <span class="market">{{ selection.market }}</span>
-                        <span class="odd">@{{ selection.odd | number:'1.2-2' }}</span>
+                        <span class="odd">@{{ selection.odd | number:'1.2-3' }}</span>
                       </div>
                     </div>
                   }
@@ -106,15 +88,14 @@
                 }
               </section>
 
-              <!-- Footer Stats -->
               <footer class="card-footer">
                 <div class="stat-row">
                   <span class="label">Stake</span>
-                  <span class="value">${{ betslip.stakeAmount | currency:'USD':'symbol':'1.0-0' }}</span>
+                  <span class="value">{{ betslip.stakeAmount | currency:'EUR':'symbol':'1.0-0' }}</span>
                 </div>
                 <div class="stat-row">
                   <span class="label">Potential Win</span>
-                  <span class="value">${{ betslip.potentialWin | currency:'USD':'symbol':'1.0-0' }}</span>
+                  <span class="value">{{ betslip.potentialWin | currency:'EUR':'symbol':'1.0-0' }}</span>
                 </div>
                 <div class="stat-row odds">
                   <span class="label">Total Odds</span>
@@ -122,17 +103,10 @@
                 </div>
               </footer>
 
-              <!-- Actions -->
               <div class="card-actions">
-                <button 
-                  class="btn btn-secondary" 
-                  type="button"
-                  (click)="editBetslip(betslip.id)">
-                  ✏️ Edit
-                </button>
+                <button class="btn btn-secondary" (click)="editBetslip(betslip.id)">✏️ Edit</button>
                 <button 
                   class="btn btn-primary"
-                  type="button"
                   [disabled]="!(betslip.selections && betslip.selections.length > 0)">
                   🎯 Place Bet
                 </button>
