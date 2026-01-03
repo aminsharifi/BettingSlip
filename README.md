@@ -14,6 +14,7 @@
 * [Architecture](#architecture)
 * [Technologies](#technologies)
 * [Setup & Run](#setup--run)
+* [Screenshots](#screenshots)
 * [API Documentation](#api-documentation)
 * [Testing](#testing)
 * [Project Structure](#project-structure)
@@ -114,6 +115,20 @@ Angular app runs at:
 ```
 http://localhost:4200
 ```
+
+---
+
+## ⚡ Screenshots
+
+![Angular](https://raw.githubusercontent.com/aminsharifi/BettingSlip/master/res/images/Angular.png)
+
+![API](https://raw.githubusercontent.com/aminsharifi/BettingSlip/master/res/images/API.png)
+
+![Database](https://raw.githubusercontent.com/aminsharifi/BettingSlip/master/res/images/Database.png)
+
+![Angular_VSCode](https://raw.githubusercontent.com/aminsharifi/BettingSlip/master/res/images/Angular_VSCode.png)
+
+![AspNet_API](https://raw.githubusercontent.com/aminsharifi/BettingSlip/master/res/images/AspNet_API.png)
 
 ---
 
