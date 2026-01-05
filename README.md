@@ -75,7 +75,7 @@ docker-compose up -d
 
 | **VS Code Development Environment** | **ASP.NET Core API Running** | **RabbitMQ Dashboard** |**Docker** |
 |-------------------------------------|------------------------------|---------------------------------|---------|
-|![Angular_VSCode](https://raw.githubusercontent.com/aminsharifi/BettingSlip/master/res/images/Angular_VSCode.png)  | ![AspNet_API](https://raw.githubusercontent.com/aminsharifi/BettingSlip/master/res/images/AspNet_API.png) |   ![RabbitMQ](https://raw.githubusercontent.com/aminsharifi/BettingSlip/master/res/images/RabbitMQ)|   ![Docker](https://raw.githubusercontent.com/aminsharifi/BettingSlip/master/res/images/Docker)|
+|![Angular_VSCode](https://raw.githubusercontent.com/aminsharifi/BettingSlip/master/res/images/Angular_VSCode.png)  | ![AspNet_API](https://raw.githubusercontent.com/aminsharifi/BettingSlip/master/res/images/AspNet_API.png) |   ![RabbitMQ](https://raw.githubusercontent.com/aminsharifi/BettingSlip/master/res/images/RabbitMQ.png)|   ![Docker](https://raw.githubusercontent.com/aminsharifi/BettingSlip/master/res/images/Docker.png)|
 
 ## 🔌 API + MassTransit Integration
 
