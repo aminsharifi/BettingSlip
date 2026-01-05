@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, SlicePipe, CurrencyPipe, DecimalPipe } from '@angular/common';
+import { lastValueFrom } from 'rxjs';
 
 interface Selection {
   id: string;
@@ -43,26 +44,28 @@ export class App implements OnInit {
     this.loadBetslips();
   }
 
-  private loadBetslips(): void {
+  private async loadBetslips() {
     console.log('🔄 Loading betslips...');
     this.isLoading.set(true);
     this.errorMessage.set('');
-    
-    this.http.get<Betslip[]>('https://localhost:5002/api/betting-slips').subscribe({
-      next: (response) => {
-        if (Array.isArray(response)) {
-          this.betslips.set(response);
-          console.log('📡 API Response:', response);
-        }
-      },
-      error: (error) => {
-        console.error('❌ API Error:', error);
-        this.errorMessage.set(`Failed to load: ${error.message}`);
-      },
-      complete: () => {
-        this.isLoading.set(false);
-      }
-    });
+    await this.getbetslips();
+    console.log('🔄 Loading Complete');
+  }
+
+  private async getbetslips()
+  {
+    try
+    {
+      var result = await lastValueFrom(this.http.get<Betslip[]>('https://localhost:5002/api/betting-slips'));
+      this.betslips.set(result);
+      this.isLoading.set(false);
+      return;
+    }
+    catch(error)
+    {
+      console.log(error);
+      throw error;
+    }
   }
 
   protected editBetslip(id: string): void {
