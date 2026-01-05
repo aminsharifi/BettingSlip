@@ -20,6 +20,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BettingSlip.FunctionalTests
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BettingSlip.Contracts", "src\BettingSlip.Contracts\BettingSlip.Contracts.csproj", "{D288E0FF-DE0B-43D0-BB72-BEB60592980B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BettingSlip.WalletService", "src\BettingSlip.WalletService\BettingSlip.WalletService.csproj", "{A25A34A3-4A4D-4989-9C95-DE2EA74BC01E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +58,14 @@ Global
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D288E0FF-DE0B-43D0-BB72-BEB60592980B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D288E0FF-DE0B-43D0-BB72-BEB60592980B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D288E0FF-DE0B-43D0-BB72-BEB60592980B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D288E0FF-DE0B-43D0-BB72-BEB60592980B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A25A34A3-4A4D-4989-9C95-DE2EA74BC01E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A25A34A3-4A4D-4989-9C95-DE2EA74BC01E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A25A34A3-4A4D-4989-9C95-DE2EA74BC01E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A25A34A3-4A4D-4989-9C95-DE2EA74BC01E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,6 +77,8 @@ Global
 		{5178E8D4-1553-48ED-80D7-4FFCF73C510C} = {D49C6F69-A6E7-4FF3-9547-F6E94E2D386A}
 		{34BB0D5F-B620-4574-8667-F85DB87FB06A} = {0025269A-EA60-4212-B4D0-539564643401}
 		{94824FCE-8CE8-494F-B435-4D3AA0E88597} = {0025269A-EA60-4212-B4D0-539564643401}
+		{D288E0FF-DE0B-43D0-BB72-BEB60592980B} = {D49C6F69-A6E7-4FF3-9547-F6E94E2D386A}
+		{A25A34A3-4A4D-4989-9C95-DE2EA74BC01E} = {D49C6F69-A6E7-4FF3-9547-F6E94E2D386A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {936F5AE6-E8C7-48C8-AC3A-79EF650B61FD}

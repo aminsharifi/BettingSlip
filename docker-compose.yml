@@ -19,6 +19,17 @@ services:
       timeout: 5s
       retries: 10
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"   # RabbitMQ default port for clients
+      - "15672:15672" # RabbitMQ management UI
+
   bettingslip.service:
     image: bettingslipservice
     build:
@@ -27,12 +38,32 @@ services:
     depends_on:
       sqlserver:
         condition: service_healthy
+      rabbitmq:
+        condition: service_started
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=BettingSlipDb;User Id=sa;Password=m8A2T£5oH4n;TrustServerCertificate=True;
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Username=guest
+      - RabbitMQ__Password=guest
     ports:
       - "5001:5001"
       - "5002:5002"
+  wallet.service:
+    image: walletservice
+    build:
+      context: .
+      dockerfile: /src/BettingSlip.WalletService/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_started
+    environment:
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Username=guest
+      - RabbitMQ__Password=guest
+    ports:
+      - "5011:5011"
+      - "5012:5012"
 
 volumes:
   sqlserver-data:

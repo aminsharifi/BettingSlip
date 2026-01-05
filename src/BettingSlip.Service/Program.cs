@@ -1,9 +1,13 @@
 using BettingSlip.Application.BettingSlips.Services;
 using BettingSlip.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System;
+using BettingSlip.Infrastructure.Messaging;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+// Register MassTransit via Infrastructure layer
+builder.Services.AddRabbitMq(builder.Configuration);
 
 // Add services
 builder.Services.AddControllers();            // <--- must have this

@@ -8,6 +8,8 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
     <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
+    <EnableSdkContainerDebugging>True</EnableSdkContainerDebugging>
+    <ContainerBaseImage>mcr.microsoft.com/dotnet/aspnet:10.0</ContainerBaseImage>
   </PropertyGroup>
 
   <ItemGroup>
@@ -76,6 +78,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BettingSlip.Infrastructure\BettingSlip.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ContainerPort Include="8081" />
   </ItemGroup>
 
 </Project>

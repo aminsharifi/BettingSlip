@@ -1,6 +1,7 @@
 ﻿using BettingSlip.Application.Abstractions.Persistence;
 using BettingSlip.Application.BettingSlips.Commands;
 using BettingSlip.Application.BettingSlips.DTOs;
+using BettingSlip.Application.BettingSlips.Messaging;
 using BettingSlip.Core.SlipAggregate;
 using System.Data;
 
@@ -8,6 +9,7 @@ namespace BettingSlip.Application.BettingSlips.Services;
 
 public class BettingSlipService(
         IBettingSlipRepository repository,
+        IBetPublisher betPublisher,
         IUnitOfWork unitOfWork)
 {
 
@@ -15,6 +17,10 @@ public class BettingSlipService(
     {
         var slip = new Slip(command.StakeAmount);
         await repository.AddAsync(slip);
+
+        // Publish via interface
+        await betPublisher.PublishBetPlaced(slip.Id, Guid.NewGuid(), slip.StakeAmount);
+
         return slip.Id;
     }
 
@@ -45,9 +51,7 @@ public class BettingSlipService(
 
     public async Task<List<BettingSlipDto>> ResultAsync()
     {
-        return (await repository.ListAsync())
-            .Select(x => x.ToBettingSlipDto())
-            .ToList();
+        return [.. (await repository.ListAsync()).Select(x => x.ToBettingSlipDto())];
     }
 
     public async Task<BettingSlipDto?> GetAsync(Guid id)

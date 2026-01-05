@@ -8,7 +8,9 @@
       "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}",
       "serviceActions": {
         "bettingslip.service": "StartDebugging",
-        "sqlserver": "StartWithoutDebugging"
+        "sqlserver": "StartWithoutDebugging",
+        "rabbitmq": "StartWithoutDebugging",
+        "wallet.service": "StartWithoutDebugging"
       }
     }
   }

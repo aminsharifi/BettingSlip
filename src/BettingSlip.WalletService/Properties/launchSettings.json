@@ -7,15 +7,15 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5001;https://localhost:5002"
+      "applicationUrl": "http://localhost:5011;https://localhost:5012"
     },
     "Container (Dockerfile)": {
       "commandName": "Docker",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "environmentVariables": {
-        "ASPNETCORE_HTTP_PORTS": "5001",
-        "ASPNETCORE_HTTPS_PORTS": "5002"
+        "ASPNETCORE_HTTP_PORTS": "5011",
+        "ASPNETCORE_HTTPS_PORTS": "5012"
       },
       "publishAllPorts": true,
       "useSSL": true
@@ -23,10 +23,10 @@
     "WSL": {
       "commandName": "WSL2",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:5002",
+      "launchUrl": "https://localhost:5012",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "http://localhost:5001;https://localhost:5002"
+        "ASPNETCORE_URLS": "http://localhost:5011;https://localhost:5012"
       },
       "distributionName": ""
     },
@@ -35,8 +35,8 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "environmentVariables": {
-        "ASPNETCORE_HTTPS_PORTS": "5001",
-        "ASPNETCORE_HTTP_PORTS": "5002"
+        "ASPNETCORE_HTTPS_PORTS": "5011",
+        "ASPNETCORE_HTTP_PORTS": "5012"
       },
       "publishAllPorts": true,
       "useSSL": true
