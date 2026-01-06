@@ -1,7 +1,9 @@
-using BettingSlip.Application.BettingSlips.Services;
+﻿using BettingSlip.Application.BettingSlips.Services;
+using BettingSlip.Infrastructure.Messaging;
+using BettingSlip.Infrastructure.Observability;
 using BettingSlip.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using BettingSlip.Infrastructure.Messaging;
+using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,18 @@ builder.Services.AddRabbitMq(builder.Configuration);
 builder.Services.AddControllers();            // <--- must have this
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+builder.Services.AddOpenTelemetry()
+    .WithTracing(builder =>
+    {
+        builder
+            .AddSource(TracingSources.MassTransit) // 👈 Infra constant
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddEntityFrameworkCoreInstrumentation()
+            .AddOtlpExporter();
+    });
 
 // Configure SQL Server DbContext (Windows Authentication)
 builder.Services.AddDbContext<BettingSlipDbContext>(options =>
