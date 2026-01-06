@@ -3,6 +3,12 @@ using BettingSlip.WalletService.Consumers;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5011);
+    options.ListenAnyIP(5012);
+});
+
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<BetPlacedConsumer>(cfg =>

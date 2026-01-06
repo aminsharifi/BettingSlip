@@ -7,6 +7,12 @@ using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5001);
+    options.ListenAnyIP(5002);
+});
+
 
 // Register MassTransit via Infrastructure layer
 builder.Services.AddRabbitMq(builder.Configuration);
