@@ -1,6 +1,5 @@
 ﻿using BettingSlip.Core.SlipAggregate;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace BettingSlip.Infrastructure.Persistence;
 

@@ -20,7 +20,6 @@ public static class DependencyInjection
 
         services.AddScoped<IUnitOfWork, EfUnitOfWork>();
 
-
         return services;
     }
 }

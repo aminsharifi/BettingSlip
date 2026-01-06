@@ -51,7 +51,7 @@ namespace BettingSlip.Infrastructure.Migrations
 
                     b.HasIndex("SlipId");
 
-                    b.ToTable("Selections");
+                    b.ToTable("Selections", (string)null);
                 });
 
             modelBuilder.Entity("BettingSlip.Core.SlipAggregate.Slip", b =>
@@ -85,7 +85,7 @@ namespace BettingSlip.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Slips");
+                    b.ToTable("Slips", (string)null);
                 });
 
             modelBuilder.Entity("BettingSlip.Core.SlipAggregate.Selection", b =>

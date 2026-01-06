@@ -5,18 +5,27 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddMassTransit(x =>
 {
-    x.AddConsumer<BetPlacedConsumer>();
+    x.AddConsumer<BetPlacedConsumer>(cfg =>
+    {
+        cfg.UseMessageRetry(r =>
+        {
+            r.Interval(3, TimeSpan.FromSeconds(5));
+        });
+    });
+
 
     x.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host("rabbitmq", "/", h =>
+        cfg.Host(builder.Configuration["RabbitMQ:Host"], h =>
         {
-            h.Username("guest");
-            h.Password("guest");
+            h.Username(builder.Configuration["RabbitMQ:Username"]);
+            h.Password(builder.Configuration["RabbitMQ:Password"]);
         });
-
         cfg.ReceiveEndpoint("wallet-service", e =>
         {
+            e.PrefetchCount = 16; 
+            e.ConcurrentMessageLimit = 8;
+            e.UseInMemoryInboxOutbox(context);
             e.ConfigureConsumer<BetPlacedConsumer>(context);
         });
     });

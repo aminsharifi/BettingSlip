@@ -15,14 +15,30 @@ public class BettingSlipService(
 
     public async Task<Guid> CreateAsync(CreateBettingSlipCommand command)
     {
-        var slip = new Slip(command.StakeAmount);
-        await repository.AddAsync(slip);
+        await unitOfWork.BeginAsync();
 
-        // Publish via interface
-        await betPublisher.PublishBetPlaced(slip.Id, Guid.NewGuid(), slip.StakeAmount);
+        try
+        {
+            var slip = new Slip(command.StakeAmount);
+            await repository.AddAsync(slip);
 
-        return slip.Id;
+            // This is SAFE when MassTransit Outbox is enabled
+            await betPublisher.PublishBetPlaced(
+                slip.Id,
+                Guid.NewGuid(),
+                slip.StakeAmount);
+
+            await unitOfWork.CommitAsync();
+
+            return slip.Id;
+        }
+        catch
+        {
+            await unitOfWork.RollbackAsync();
+            throw;
+        }
     }
+
 
     public async Task AddSelectionAsync(AddSelectionCommand command)
     {

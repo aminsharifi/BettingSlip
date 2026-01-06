@@ -1,6 +1,7 @@
-﻿using MassTransit;
+﻿using BettingSlip.Application.BettingSlips.Messaging;
 using BettingSlip.Contracts.Events;
-using BettingSlip.Application.BettingSlips.Messaging;
+using BettingSlip.Core.SlipAggregate;
+using MassTransit;
 
 namespace BettingSlip.Infrastructure.Messaging;
 
@@ -8,11 +9,11 @@ public class BetPublisher(IPublishEndpoint publishEndpoint) : IBetPublisher
 {
     private readonly IPublishEndpoint _publishEndpoint = publishEndpoint;
 
-    public async Task PublishBetPlaced(Guid betId, Guid userId, decimal amount)
+    public async Task PublishBetPlaced(Guid slipId, Guid userId, decimal amount)
     {
         var betPlaced = new BetPlaced
         {
-            BetId = betId,
+            SlipId = slipId,
             UserId = userId,
             Amount = amount
         };

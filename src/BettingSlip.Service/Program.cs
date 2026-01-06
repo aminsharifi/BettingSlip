@@ -18,6 +18,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<BettingSlipDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
+// Configure SQL Server DbContext (Windows Authentication)
+builder.Services.AddDbContext<SagaStateDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SagaStateConnection"))
+);
+
 // Application services
 builder.Services.AddScoped<BettingSlipService>(); 
 builder.Services.AddInfrastructure(builder.Configuration);
