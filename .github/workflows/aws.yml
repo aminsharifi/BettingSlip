@@ -1,13 +1,25 @@
-name: Push BettingSlip API to ECR
+name: Deploy BettingSlip API to ECS
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main   # Run on push to main branch
+  workflow_dispatch:   # Also allows manual trigger
 
 jobs:
-  push-to-ecr:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
+    # ───────────────────────────────
+    # Step 1: Checkout repo
+    # ───────────────────────────────
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # ───────────────────────────────
+    # Step 2: Configure AWS credentials
+    # ───────────────────────────────
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
@@ -15,20 +27,42 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
-    - name: Verify AWS identity
-      run: aws sts get-caller-identity
-
-    - name: Log in to ECR
-      id: login-ecr
+    # ───────────────────────────────
+    # Step 3: Log in to Amazon ECR
+    # ───────────────────────────────
+    - name: Log in to Amazon ECR
       run: |
         aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
         docker login --username AWS --password-stdin 897768183462.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
-    - name: Pull BettingSlip image from GitHub Container Registry
-      run: docker pull ghcr.io/aminsharifi/bettingslipservice:16
+    # ───────────────────────────────
+    # Step 4: Pull Docker image from GHCR
+    # ───────────────────────────────
+    - name: Pull Docker image from GHCR
+      run: |
+        docker pull ghcr.io/aminsharifi/bettingslipservice:16
 
-    - name: Tag image for ECR
-      run: docker tag ghcr.io/aminsharifi/bettingslipservice:16 897768183462.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/bettingslip-api:latest
+    # ───────────────────────────────
+    # Step 5: Tag image for ECR
+    # ───────────────────────────────
+    - name: Tag Docker image for ECR
+      run: |
+        docker tag ghcr.io/aminsharifi/bettingslipservice:latest \
+        897768183462.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
 
-    - name: Push image to ECR
-      run: docker push 897768183462.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/bettingslip-api:latest
+    # ───────────────────────────────
+    # Step 6: Push image to ECR
+    # ───────────────────────────────
+    - name: Push Docker image to ECR
+      run: |
+        docker push 897768183462.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
+
+    # ───────────────────────────────
+    # Step 7: Update ECS service
+    # ───────────────────────────────
+    - name: Update ECS service
+      run: |
+        aws ecs update-service \
+          --cluster ${{ secrets.ECS_CLUSTER }} \
+          --service ${{ secrets.ECS_SERVICE }} \
+          --force-new-deployment
