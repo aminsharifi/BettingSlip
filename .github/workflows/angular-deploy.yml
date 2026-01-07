@@ -1,0 +1,82 @@
+name: Deploy Angular UI to S3
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/BettingSlip.Client/**"
+  workflow_dispatch: # allow manual trigger
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-angular:
+    name: Build & Deploy Angular
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      # ─────────────────────────────────────────────
+      # 1️⃣ Checkout source
+      # ─────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ─────────────────────────────────────────────
+      # 2️⃣ Setup Node.js
+      # ─────────────────────────────────────────────
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: src/BettingSlip.Client/package-lock.json
+
+      # ─────────────────────────────────────────────
+      # 3️⃣ Install dependencies
+      # ─────────────────────────────────────────────
+      - name: Install dependencies
+        working-directory: src/BettingSlip.Client
+        run: npm ci
+
+      # ─────────────────────────────────────────────
+      # 4️⃣ Build Angular (production)
+      # ─────────────────────────────────────────────
+      - name: Build Angular
+        working-directory: src/BettingSlip.Client
+        env:
+          NODE_ENV: production
+        run: |
+          npm run build -- --configuration production
+
+      # ─────────────────────────────────────────────
+      # 5️⃣ Configure AWS credentials
+      # ─────────────────────────────────────────────
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # ─────────────────────────────────────────────
+      # 6️⃣ Deploy to S3
+      # ─────────────────────────────────────────────
+      - name: Deploy to S3
+        run: |
+          aws s3 sync \
+            src/BettingSlip.Client/dist/bettingslip \
+            s3://${{ secrets.S3_BUCKET_NAME }} \
+            --delete \
+            --only-show-errors
+
+      # ─────────────────────────────────────────────
+      # 7️⃣ Output deployment info
+      # ─────────────────────────────────────────────
+      - name: Deployment summary
+        run: |
+          echo "✅ Angular UI deployed successfully"
+          echo "🪣 S3 Bucket: ${{ secrets.S3_BUCKET_NAME }}"
+          echo "🌍 Region: ${{ secrets.AWS_REGION }}"
