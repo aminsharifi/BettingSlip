@@ -1,6 +1,4 @@
 ﻿using BettingSlip.Core.SlipAggregate;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BettingSlip.Infrastructure.Persistence.Configurations;
 
@@ -11,7 +9,10 @@ public class SlipConfiguration : IEntityTypeConfiguration<Slip>
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.StakeAmount)
-            .HasColumnType("decimal(18,2)");
+            .HasPrecision(18, 2);
+
+        builder.Property(e => e.PotentialWin).HasPrecision(18, 2);
+        builder.Property(e => e.TotalOdds).HasPrecision(18, 4);
 
         builder.Property(x => x.Status)
             .HasConversion<string>()
@@ -20,6 +21,7 @@ public class SlipConfiguration : IEntityTypeConfiguration<Slip>
         builder.Property(x => x.RowVersion)
             .IsRowVersion()
             .IsConcurrencyToken();
+
     }
 }
 

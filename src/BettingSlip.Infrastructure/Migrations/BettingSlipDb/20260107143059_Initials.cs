@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace BettingSlip.Infrastructure.Migrations
+namespace BettingSlip.Infrastructure.Migrations.BettingSlipDb
 {
     /// <inheritdoc />
     public partial class Initials : Migration
@@ -17,9 +17,9 @@ namespace BettingSlip.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
-                    StakeAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TotalOdds = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PotentialWin = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    StakeAmount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    TotalOdds = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
+                    PotentialWin = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
                 },
@@ -35,7 +35,7 @@ namespace BettingSlip.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     EventName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Market = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Odd = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    Odd = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     SlipId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
                 },

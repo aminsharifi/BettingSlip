@@ -1,11 +1,6 @@
 ﻿using BettingSlip.Application.BettingSlips.Messaging;
 using BettingSlip.Contracts.Events;
-using BettingSlip.Infrastructure.Persistence;
-using MassTransit;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
+
 
 namespace BettingSlip.Infrastructure.Messaging;
 

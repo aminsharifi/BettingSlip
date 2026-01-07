@@ -2,51 +2,30 @@
 using BettingSlip.Infrastructure.Messaging;
 using BettingSlip.Infrastructure.Observability;
 using BettingSlip.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
-using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ─────────────────────────────────────────────
+// Kestrel config
+// ─────────────────────────────────────────────
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(5001);
-    options.ListenAnyIP(5002);
+    options.ListenAnyIP(5001); // ECS/Fargate port
+    //options.ListenAnyIP(5002); // optional HTTPS for local only
 });
 
-
+// ─────────────────────────────────────────────
+// Services
+// ─────────────────────────────────────────────
 // Register MassTransit via Infrastructure layer
 builder.Services.AddRabbitMq(builder.Configuration);
-
-// Add services
-builder.Services.AddControllers();            // <--- must have this
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
-builder.Services.AddOpenTelemetry()
-    .WithTracing(builder =>
-    {
-        builder
-            .AddSource(TracingSources.MassTransit) // 👈 Infra constant
-            .AddAspNetCoreInstrumentation()
-            .AddHttpClientInstrumentation()
-            .AddEntityFrameworkCoreInstrumentation()
-            .AddOtlpExporter();
-    });
-
-// Configure SQL Server DbContext (Windows Authentication)
-builder.Services.AddDbContext<BettingSlipDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
-
-// Configure SQL Server DbContext (Windows Authentication)
-builder.Services.AddDbContext<SagaStateDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SagaStateConnection"))
-);
-
-// Application services
-builder.Services.AddScoped<BettingSlipService>(); 
-builder.Services.AddInfrastructure(builder.Configuration);
+// ─────────────────────────────────────────────
+// CORS (Allow all for now)
+// ─────────────────────────────────────────────
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -55,44 +34,65 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod());
 });
 
-static void ApplyMigrations(WebApplication app)
-{
-    using var scope = app.Services.CreateScope();
-    var db = scope.ServiceProvider.GetRequiredService<BettingSlipDbContext>();
+// ─────────────────────────────────────────────
+// Application services
+// ─────────────────────────────────────────────
+builder.Services.AddScoped<BettingSlipService>();
+builder.Services.AddInfrastructure(builder.Configuration);
 
-    for (int i = 0; i < 10; i++)
+// ─────────────────────────────────────────────
+// OpenTelemetry
+// ─────────────────────────────────────────────
+builder.Services.AddOpenTelemetry()
+    .WithTracing(tracerBuilder =>
     {
-        try
-        {
-            db.Database.Migrate();
-            return;
-        }
-        catch
-        {
-            Thread.Sleep(3000);
-        }
-    }
+        tracerBuilder
+            .AddSource(TracingSources.MassTransit)
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddEntityFrameworkCoreInstrumentation()
+            .AddOtlpExporter(); // optional
+    });
 
-    throw new Exception("Database migration failed after retries.");
-}
-
-
+// ─────────────────────────────────────────────
+// App build
+// ─────────────────────────────────────────────
 var app = builder.Build();
 
-ApplyMigrations(app);
 
-// Swagger setup
+
+static void ApplyMigrations<TContext>(WebApplication app)
+where TContext : DbContext
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<TContext>();
+    db.Database.Migrate();
+}
+
+ApplyMigrations<BettingSlipDbContext>(app);
+
+ApplyMigrations<SagaStateDbContext>(app);
+
+// ─────────────────────────────────────────────
+// Middleware
+// ─────────────────────────────────────────────
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
-app.UseAuthorization();
 
+// Only redirect to HTTPS in Development
+if (builder.Environment.IsDevelopment())
+{
+    //app.UseHttpsRedirection();
+}
+
+app.UseAuthorization();
 app.UseCors("AllowAll");
 
-
-// Map controllers
+// ─────────────────────────────────────────────
+// Map endpoints
+// ─────────────────────────────────────────────
 app.MapControllers();
-
+app.MapHealthChecks("/health"); // ECS health check
 
 app.Run();

@@ -1,5 +1,4 @@
-﻿using MassTransit;
-using BettingSlip.Contracts.Events;
+﻿using BettingSlip.Contracts.Events;
 
 namespace BettingSlip.Infrastructure.Messaging;
 

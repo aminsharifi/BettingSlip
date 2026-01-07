@@ -1,9 +1,6 @@
 ﻿using BettingSlip.Application.Abstractions.Persistence;
 using BettingSlip.Application.BettingSlips.Commands;
 using BettingSlip.Core.SlipAggregate;
-using Microsoft.EntityFrameworkCore;
-using System;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace BettingSlip.Infrastructure.Persistence.Repositories;
 

@@ -3,7 +3,6 @@ using BettingSlip.Application.BettingSlips.Commands;
 using BettingSlip.Application.BettingSlips.DTOs;
 using BettingSlip.Application.BettingSlips.Messaging;
 using BettingSlip.Core.SlipAggregate;
-using System.Data;
 
 namespace BettingSlip.Application.BettingSlips.Services;
 

@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BettingSlip.Infrastructure.Migrations
+namespace BettingSlip.Infrastructure.Migrations.BettingSlipDb
 {
     [DbContext(typeof(BettingSlipDbContext))]
-    [Migration("20260103082802_Initials")]
+    [Migration("20260107143059_Initials")]
     partial class Initials
     {
         /// <inheritdoc />
@@ -45,7 +45,8 @@ namespace BettingSlip.Infrastructure.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<decimal>("Odd")
-                        .HasColumnType("decimal(10,2)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("SlipId")
                         .HasColumnType("uniqueidentifier");
@@ -67,6 +68,7 @@ namespace BettingSlip.Infrastructure.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<decimal>("PotentialWin")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<byte[]>("RowVersion")
@@ -76,6 +78,7 @@ namespace BettingSlip.Infrastructure.Migrations
                         .HasColumnType("rowversion");
 
                     b.Property<decimal>("StakeAmount")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Status")
@@ -84,7 +87,8 @@ namespace BettingSlip.Infrastructure.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<decimal>("TotalOdds")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
 
                     b.HasKey("Id");
 

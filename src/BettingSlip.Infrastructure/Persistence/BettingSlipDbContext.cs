@@ -1,5 +1,5 @@
 ﻿using BettingSlip.Core.SlipAggregate;
-using Microsoft.EntityFrameworkCore;
+using BettingSlip.Infrastructure.Persistence.Configurations;
 
 namespace BettingSlip.Infrastructure.Persistence;
 
@@ -15,7 +15,11 @@ public class BettingSlipDbContext(DbContextOptions<BettingSlipDbContext> options
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(BettingSlipDbContext).Assembly);
+        var _name = typeof(BettingSlipDbContext).Assembly.GetName();
+
+        modelBuilder.ApplyConfiguration(new SlipConfiguration());
+        modelBuilder.ApplyConfiguration(new SelectionConfiguration());
+
         base.OnModelCreating(modelBuilder);
     }
 }

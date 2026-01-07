@@ -1,8 +1,7 @@
 ﻿namespace BettingSlip.Infrastructure.Persistence.Configurations;
 
 using BettingSlip.Core.SlipAggregate;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
 
 public class SelectionConfiguration : IEntityTypeConfiguration<Selection>
 {
@@ -19,7 +18,7 @@ public class SelectionConfiguration : IEntityTypeConfiguration<Selection>
                .IsRequired();
 
         builder.Property(x => x.Odd)
-               .HasColumnType("decimal(10,2)")
+               .HasPrecision(18, 2)
                .IsRequired();
     }
 }

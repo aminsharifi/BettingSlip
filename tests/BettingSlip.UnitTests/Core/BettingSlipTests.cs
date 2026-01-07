@@ -1,7 +1,5 @@
 ﻿namespace BettingSlip.UnitTests.Core;
-
 using BettingSlip.Core.SlipAggregate;
-using Shouldly;
 
 public class BettingSlipTests
 {

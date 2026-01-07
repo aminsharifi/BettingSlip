@@ -1,6 +1,4 @@
-﻿using MassTransit;
-
-namespace BettingSlip.Infrastructure.Messaging;
+﻿namespace BettingSlip.Infrastructure.Messaging;
 
 public class BetSagaState : SagaStateMachineInstance
 {

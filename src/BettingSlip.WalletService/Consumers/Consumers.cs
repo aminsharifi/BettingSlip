@@ -1,5 +1,5 @@
 ﻿using BettingSlip.Contracts.Events;
-using MassTransit;
+
 
 namespace BettingSlip.WalletService.Consumers;
 

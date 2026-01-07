@@ -1,8 +1,5 @@
 ﻿using BettingSlip.Application.Abstractions.Persistence;
 using BettingSlip.Infrastructure.Persistence.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace BettingSlip.Infrastructure.Persistence;
 
@@ -13,8 +10,10 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.AddDbContext<BettingSlipDbContext>(options =>
-            options.UseSqlServer(
-                configuration.GetConnectionString("DefaultConnection")));
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
+        services.AddDbContext<SagaStateDbContext>(options =>
+        options.UseSqlServer(configuration.GetConnectionString("SagaStateConnection")));
 
         services.AddScoped<IBettingSlipRepository, BettingSlipRepository>();
 

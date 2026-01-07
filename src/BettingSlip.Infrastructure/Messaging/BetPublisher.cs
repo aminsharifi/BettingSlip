@@ -1,7 +1,5 @@
 ﻿using BettingSlip.Application.BettingSlips.Messaging;
 using BettingSlip.Contracts.Events;
-using BettingSlip.Core.SlipAggregate;
-using MassTransit;
 
 namespace BettingSlip.Infrastructure.Messaging;
 

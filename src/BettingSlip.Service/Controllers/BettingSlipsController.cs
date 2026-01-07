@@ -2,7 +2,6 @@
 
 using BettingSlip.Application.BettingSlips.Commands;
 using BettingSlip.Application.BettingSlips.Services;
-using Microsoft.AspNetCore.Mvc;
 
 
 [ApiController]

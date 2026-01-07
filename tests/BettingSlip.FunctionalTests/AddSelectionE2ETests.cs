@@ -1,8 +1,4 @@
-﻿using FluentAssertions;
-using System.Net;
-using System.Net.Http.Json;
-
-namespace BettingSlip.FunctionalTests;
+﻿namespace BettingSlip.FunctionalTests;
 
 public record CreateSlipResponse(Guid Id);
 
