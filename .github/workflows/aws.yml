@@ -1,10 +1,10 @@
-name: AWS Connection Test
+name: Push BettingSlip API to ECR
 
 on:
   workflow_dispatch:
 
 jobs:
-  test-aws:
+  push-to-ecr:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,3 +17,18 @@ jobs:
 
     - name: Verify AWS identity
       run: aws sts get-caller-identity
+
+    - name: Log in to ECR
+      id: login-ecr
+      run: |
+        aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
+        docker login --username AWS --password-stdin 897768183462.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+
+    - name: Pull BettingSlip image from GitHub Container Registry
+      run: docker pull ghcr.io/aminsharifi/bettingslipservice:16
+
+    - name: Tag image for ECR
+      run: docker tag ghcr.io/aminsharifi/bettingslipservice:16 897768183462.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/bettingslip-api:latest
+
+    - name: Push image to ECR
+      run: docker push 897768183462.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/bettingslip-api:latest
