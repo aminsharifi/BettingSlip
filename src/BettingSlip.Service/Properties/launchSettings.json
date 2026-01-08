@@ -6,8 +6,8 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_URLS": "http://localhost:5001",
-        "DEFAULT_CONNECTION": "Server=bettingslipdb.c5ymskmy4dha.eu-central-1.rds.amazonaws.com,1433;Database=BettingSlipDb;User Id=sa;Password=G7v$9Lq!X2p;TrustServerCertificate=True;",
-        "SAGA_CONNECTION": "Server=bettingslipdb.c5ymskmy4dha.eu-central-1.rds.amazonaws.com,1433;Database=StateDb;User Id=sa;Password=G7v$9Lq!X2p;TrustServerCertificate=True;",
+        "DEFAULT_CONNECTION": "",
+        "SAGA_CONNECTION": "",
         "RabbitMQ_Host": "localhost",
         "RabbitMQ_Username": "guest",
         "RabbitMQ_Password": "guest",
