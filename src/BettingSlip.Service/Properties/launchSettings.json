@@ -5,7 +5,13 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "http://localhost:5001"
+        "ASPNETCORE_URLS": "http://localhost:5001",
+        "DEFAULT_CONNECTION": "Server=bettingslipdb.c5ymskmy4dha.eu-central-1.rds.amazonaws.com,1433;Database=BettingSlipDb;User Id=sa;Password=G7v$9Lq!X2p;TrustServerCertificate=True;",
+        "SAGA_CONNECTION": "Server=bettingslipdb.c5ymskmy4dha.eu-central-1.rds.amazonaws.com,1433;Database=StateDb;User Id=sa;Password=G7v$9Lq!X2p;TrustServerCertificate=True;",
+        "RabbitMQ_Host": "localhost",
+        "RabbitMQ_Username": "guest",
+        "RabbitMQ_Password": "guest",
+        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:4317"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5001"

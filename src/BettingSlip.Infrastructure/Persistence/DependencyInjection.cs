@@ -9,14 +9,19 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
+
+        // Use environment variables if present, otherwise fallback to config
+        var defaultConnection = configuration.GetConnectionString("DefaultConnection");
+
+        var sagaConnection = configuration.GetConnectionString("SagaStateConnection");
+
         services.AddDbContext<BettingSlipDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            options.UseSqlServer(defaultConnection));
 
         services.AddDbContext<SagaStateDbContext>(options =>
-        options.UseSqlServer(configuration.GetConnectionString("SagaStateConnection")));
+            options.UseSqlServer(sagaConnection));
 
         services.AddScoped<IBettingSlipRepository, BettingSlipRepository>();
-
         services.AddScoped<IUnitOfWork, EfUnitOfWork>();
 
         return services;

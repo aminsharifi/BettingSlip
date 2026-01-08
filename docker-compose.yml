@@ -12,13 +12,13 @@ services:
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_PID=Developer
-      - SA_PASSWORD=m8A2T£5oH4n
+      - SA_PASSWORD=G7v$9Lq!X2p
     ports:
       - "5003:1433"   # host access for management / tools
     volumes:
       - sqlserver-data:/var/opt/mssql
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P m8A2T£5oH4n -Q \"SELECT 1\""]
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P G7v$9Lq!X2p -Q \"SELECT 1\""]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -53,8 +53,8 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       # Use container name and internal SQL Server port (1433) for inter-container connectivity
-      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=BettingSlipDb;User Id=sa;Password=m8A2T£5oH4n;TrustServerCertificate=True;"
-      ConnectionStrings__SagaStateConnection: "Server=sqlserver,1433;Database=StateDb;User Id=sa;Password=m8A2T£5oH4n;TrustServerCertificate=True;"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=BettingSlipDb;User Id=sa;Password=G7v$9Lq!X2p;TrustServerCertificate=True;"
+      ConnectionStrings__SagaStateConnection: "Server=sqlserver,1433;Database=StateDb;User Id=sa;Password=G7v$9Lq!X2p;TrustServerCertificate=True;"
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: guest
       RabbitMQ__Password: guest
