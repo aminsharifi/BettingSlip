@@ -11,9 +11,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # ───────────────────────────────
+    # Step 1: Checkout repository
+    # ───────────────────────────────
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    # ───────────────────────────────
+    # Step 2: Configure AWS credentials
+    # ───────────────────────────────
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
@@ -21,24 +27,60 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
+    # ───────────────────────────────
+    # Step 3: Login to Amazon ECR
+    # ───────────────────────────────
     - name: Login to Amazon ECR
       run: |
         aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
-        docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+        docker login --username AWS --password-stdin \
+        ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
-    - name: Pull image from GHCR (PUBLIC)
+    # ───────────────────────────────
+    # Step 4: Pull image from GHCR (PUBLIC)
+    # ───────────────────────────────
+    - name: Pull image from GHCR
       run: docker pull ghcr.io/aminsharifi/bettingslipservice:latest
 
+    # ───────────────────────────────
+    # Step 5: Tag image for ECR
+    # ───────────────────────────────
     - name: Tag image for ECR
-      run: docker tag ghcr.io/aminsharifi/bettingslipservice:latest \
-        ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
-
-    - name: Push image to ECR
-      run: docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
-
-    - name: Update ECS service
       run: |
+        docker tag ghcr.io/aminsharifi/bettingslipservice:latest \
+        ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
+        echo "Image tagged successfully"
+
+    # ───────────────────────────────
+    # Step 6: Push image to ECR
+    # ───────────────────────────────
+    - name: Push image to ECR
+      run: |
+        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
+        echo "Image pushed successfully"
+
+    # ───────────────────────────────
+    # Step 7: Update ECS service
+    # ───────────────────────────────
+    - name: Deploy to ECS
+      run: |
+        # Fetch current task definition
+        CURRENT_TASK=$(aws ecs describe-task-definition \
+          --task-definition bettingslip-api-task)
+
+        # Replace container image with new image
+        NEW_IMAGE="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest"
+        UPDATED_TASK=$(echo "$CURRENT_TASK" | jq --arg IMAGE "$NEW_IMAGE" '.taskDefinition.containerDefinitions[0].image = $IMAGE')
+
+        # Register new task definition
+        echo "$UPDATED_TASK" > new-task-def.json
+        REGISTERED_TASK=$(aws ecs register-task-definition \
+          --cli-input-json file://new-task-def.json)
+
+        # Deploy ECS service
+        TASK_DEF_ARN=$(echo "$REGISTERED_TASK" | jq -r '.taskDefinition.taskDefinitionArn')
         aws ecs update-service \
           --cluster ${{ secrets.ECS_CLUSTER }} \
           --service ${{ secrets.ECS_SERVICE }} \
+          --task-definition $TASK_DEF_ARN \
           --force-new-deployment
