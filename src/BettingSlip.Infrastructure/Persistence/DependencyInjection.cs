@@ -9,11 +9,12 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        // Use environment variables first, fallback to appsettings
+        var defaultConnection = Environment.GetEnvironmentVariable("DEFAULT_CONNECTION")
+                                ?? configuration.GetConnectionString("DefaultConnection");
 
-        // Use environment variables if present, otherwise fallback to config
-        var defaultConnection = configuration.GetConnectionString("DefaultConnection");
-
-        var sagaConnection = configuration.GetConnectionString("SagaStateConnection");
+        var sagaConnection = Environment.GetEnvironmentVariable("SAGA_CONNECTION")
+                             ?? configuration.GetConnectionString("SagaStateConnection");
 
         services.AddDbContext<BettingSlipDbContext>(options =>
             options.UseSqlServer(defaultConnection));
