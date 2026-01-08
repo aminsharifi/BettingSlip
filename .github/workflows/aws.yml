@@ -37,7 +37,7 @@ jobs:
         ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
     # ───────────────────────────────
-    # Step 4: Pull image from GHCR (PUBLIC)
+    # Step 4: Pull image from GHCR
     # ───────────────────────────────
     - name: Pull image from GHCR
       run: docker pull ghcr.io/aminsharifi/bettingslipservice:latest
@@ -49,36 +49,55 @@ jobs:
       run: |
         docker tag ghcr.io/aminsharifi/bettingslipservice:latest \
         ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
-        echo "Image tagged successfully"
 
     # ───────────────────────────────
     # Step 6: Push image to ECR
     # ───────────────────────────────
     - name: Push image to ECR
       run: |
-        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
-        echo "Image pushed successfully"
+        docker push \
+        ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
 
     # ───────────────────────────────
-    # Step 7: Update ECS service
+    # Step 7: Register new ECS task revision
     # ───────────────────────────────
-    - name: Deploy to ECS
+    - name: Register new ECS task definition
       run: |
-        # Fetch current task definition
-        CURRENT_TASK=$(aws ecs describe-task-definition \
-          --task-definition bettingslip-api-task)
+        set -e
 
-        # Replace container image with new image
+        echo "Fetching current task definition..."
+        aws ecs describe-task-definition \
+          --task-definition bettingslip-api-task \
+          --query taskDefinition \
+          > task-def.json
+
+        echo "Removing read-only fields..."
+        jq 'del(
+          .taskDefinitionArn,
+          .revision,
+          .status,
+          .requiresAttributes,
+          .compatibilities,
+          .registeredAt,
+          .registeredBy
+        )' task-def.json > clean-task-def.json
+
+        echo "Updating container image..."
         NEW_IMAGE="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest"
-        UPDATED_TASK=$(echo "$CURRENT_TASK" | jq --arg IMAGE "$NEW_IMAGE" '.taskDefinition.containerDefinitions[0].image = $IMAGE')
 
-        # Register new task definition
-        echo "$UPDATED_TASK" > new-task-def.json
-        REGISTERED_TASK=$(aws ecs register-task-definition \
-          --cli-input-json file://new-task-def.json)
+        jq --arg IMAGE "$NEW_IMAGE" \
+          '.containerDefinitions[0].image = $IMAGE' \
+          clean-task-def.json > new-task-def.json
 
-        # Deploy ECS service
-        TASK_DEF_ARN=$(echo "$REGISTERED_TASK" | jq -r '.taskDefinition.taskDefinitionArn')
+        echo "Registering new task definition..."
+        TASK_DEF_ARN=$(aws ecs register-task-definition \
+          --cli-input-json file://new-task-def.json \
+          --query 'taskDefinition.taskDefinitionArn' \
+          --output text)
+
+        echo "New task definition registered: $TASK_DEF_ARN"
+
+        echo "Deploying to ECS service..."
         aws ecs update-service \
           --cluster ${{ secrets.ECS_CLUSTER }} \
           --service ${{ secrets.ECS_SERVICE }} \
