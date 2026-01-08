@@ -3,8 +3,8 @@ name: Deploy BettingSlip API to ECS
 on:
   push:
     branches:
-      - main   # Run on push to main branch
-  workflow_dispatch:   # Also allows manual trigger
+      - main
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -12,7 +12,7 @@ jobs:
 
     steps:
     # ───────────────────────────────
-    # Step 1: Checkout repo
+    # Step 1: Checkout repository
     # ───────────────────────────────
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -28,39 +28,41 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
 
     # ───────────────────────────────
-    # Step 3: Log in to Amazon ECR
+    # Step 3: Login to Amazon ECR
     # ───────────────────────────────
-    - name: Log in to Amazon ECR
+    - name: Login to Amazon ECR
       run: |
         aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
-        docker login --username AWS --password-stdin 897768183462.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+        docker login --username AWS --password-stdin \
+        ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
     # ───────────────────────────────
-    # Step 4: Pull Docker image from GHCR
+    # Step 4: Pull image from GHCR (PUBLIC)
     # ───────────────────────────────
-    - name: Pull Docker image from GHCR
+    - name: Pull image from GHCR
       run: |
         docker pull ghcr.io/aminsharifi/bettingslipservice:latest
 
     # ───────────────────────────────
     # Step 5: Tag image for ECR
     # ───────────────────────────────
-    - name: Tag Docker image for ECR
+    - name: Tag image for ECR
       run: |
         docker tag ghcr.io/aminsharifi/bettingslipservice:latest \
-        897768183462.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
+        ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
 
     # ───────────────────────────────
     # Step 6: Push image to ECR
     # ───────────────────────────────
-    - name: Push Docker image to ECR
+    - name: Push image to ECR
       run: |
-        docker push 897768183462.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
+        docker push \
+        ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
 
     # ───────────────────────────────
-    # Step 7: Update ECS service
+    # Step 7: Deploy to ECS
     # ───────────────────────────────
-    - name: Update ECS service
+    - name: Deploy to ECS
       run: |
         aws ecs update-service \
           --cluster ${{ secrets.ECS_CLUSTER }} \
